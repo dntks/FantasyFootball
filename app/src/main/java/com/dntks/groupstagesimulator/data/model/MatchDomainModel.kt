@@ -5,6 +5,5 @@ data class MatchDomainModel(
     val awayTeam: TeamDomainModel,
     val homeGoals: Int,
     val awayGoals: Int,
-    val date: String,
-    val time: String
+    val time: String,
 )

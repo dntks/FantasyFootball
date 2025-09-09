@@ -1,7 +1,6 @@
 package com.dntks.groupstagesimulator.ui.navigation
 
 import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -12,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dntks.groupstagesimulator.ui.groupstatistics.view.GroupDetails
 import com.dntks.groupstagesimulator.ui.overview.view.GroupsOverview
+import com.dntks.groupstagesimulator.ui.theme.Cream
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -32,7 +32,7 @@ fun GroupPhaseNavGraph(
 
     Surface(
         modifier = Modifier.safeContentPadding(),
-        color = MaterialTheme.colorScheme.background
+        color = Cream
     ) {
         Scaffold { paddingValues ->
             paddingValues.toString()
@@ -42,15 +42,12 @@ fun GroupPhaseNavGraph(
                 modifier = modifier
             ) {
                 composable<Overview> {
-                    GroupsOverview(
-                        modifier = Modifier,
-                    ){
+                    GroupsOverview{
                         navController.navigate(route = Details(it))
                     }
                 }
                 composable<Details> { backStackEntry ->
                     GroupDetails (
-                        modifier = Modifier.safeContentPadding(),
                         onBack = { navController.popBackStack() },
                     )
                 }

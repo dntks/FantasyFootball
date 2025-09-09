@@ -1,6 +1,5 @@
 package com.dntks.groupstagesimulator.data.repository
 
-import androidx.room.Transaction
 import com.dntks.groupstagesimulator.data.db.dao.GroupDao
 import com.dntks.groupstagesimulator.data.db.dao.GroupStageMatchDao
 import com.dntks.groupstagesimulator.data.db.dao.RoundDao
@@ -12,13 +11,12 @@ import com.dntks.groupstagesimulator.data.db.entity.GroupTeamCrossRef
 import com.dntks.groupstagesimulator.data.db.entity.TeamEntity
 import com.dntks.groupstagesimulator.data.db.entity.TeamWithPlayers
 import com.dntks.groupstagesimulator.data.model.GroupDomainModel
-import com.dntks.groupstagesimulator.data.model.GroupStatistics
 import com.dntks.groupstagesimulator.data.model.MatchDomainModel
 import com.dntks.groupstagesimulator.data.model.RoundDomainModel
 import com.dntks.groupstagesimulator.data.model.TeamDomainModel
-import com.dntks.groupstagesimulator.data.model.TeamStatistics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
@@ -34,12 +32,8 @@ interface GroupStageRepository {
     fun getGroupWithTeams(groupId: Long): Flow<GroupDomainModel>
     suspend fun addGroupWithTeams(group: GroupDomainModel)
     suspend fun generateAllMatches(groupId: Long)
-    suspend fun getGroupStatistics(
-        groupId: Long,
-        teams: List<TeamDomainModel>
-    ): Flow<GroupStatistics>
-
     suspend fun deleteRoundsForGroup(groupId: Long)
+    fun getRoundsWithMatches(groupId: Long): Flow<List<RoundDomainModel>>
 }
 
 class GroupStageRepositoryImpl @Inject constructor(
@@ -60,100 +54,38 @@ class GroupStageRepositoryImpl @Inject constructor(
         return teamDao.getAllTeamWithPlayers()
     }
 
-    enum class MatchOutcome {
-        HOME_WIN, DRAW, AWAY_WIN
-    }
-
-    @Transaction
-    override suspend fun getGroupStatistics(
+    override fun getRoundsWithMatches(
         groupId: Long,
-        teams: List<TeamDomainModel>
-    ): Flow<GroupStatistics> {
-        val teamStatisticsPerTeam = teams.associateBy(
-            { it.teamId },
-            { TeamStatistics() }
-        ).toMutableMap()
-        val roundStatistics = mutableListOf<RoundDomainModel>()
-        return roundDao.getRoundsWithMatches(groupId).map { rounds ->
-            rounds.forEach { round ->
-                round.matches.forEach {
-                    val homeTeamStatistics =
-                        teamStatisticsPerTeam.getOrDefault(it.homeTeamId, TeamStatistics())
-                    val matchOutcome = if (it.homeGoals > it.awayGoals) {
-                        MatchOutcome.HOME_WIN
-                    } else if (it.homeGoals == it.awayGoals) {
-                        MatchOutcome.DRAW
-                    } else {
-                        MatchOutcome.AWAY_WIN
-                    }
-                    val updatedHomeStats = homeTeamStatistics.copy(
-                        played = homeTeamStatistics.played + 1,
-                        goalsFor = homeTeamStatistics.goalsFor + it.homeGoals,
-                        goalsAgainst = homeTeamStatistics.goalsAgainst + it.awayGoals,
-                        goalDifference = homeTeamStatistics.goalDifference + (it.homeGoals - it.awayGoals),
-                        win = homeTeamStatistics.win + if (matchOutcome == MatchOutcome.HOME_WIN) 1 else 0,
-                        loss = homeTeamStatistics.loss + if (matchOutcome == MatchOutcome.AWAY_WIN) 1 else 0,
-                        draw = homeTeamStatistics.draw + if (matchOutcome == MatchOutcome.DRAW) 1 else 0,
-                        points = homeTeamStatistics.points + when (matchOutcome) {
-                            MatchOutcome.HOME_WIN -> 3
-                            MatchOutcome.DRAW -> 1
-                            MatchOutcome.AWAY_WIN -> 0
-                        }
-                    )
-                    val awayTeamStatistics =
-                        teamStatisticsPerTeam.getOrDefault(it.awayTeamId, TeamStatistics())
-                    val updatedAwayStats = awayTeamStatistics.copy(
-                        played = awayTeamStatistics.played + 1,
-                        goalsFor = awayTeamStatistics.goalsFor + it.awayGoals,
-                        goalsAgainst = awayTeamStatistics.goalsAgainst + it.homeGoals,
-                        goalDifference = awayTeamStatistics.goalDifference + (it.awayGoals - it.homeGoals),
-                        win = awayTeamStatistics.win + if (matchOutcome == MatchOutcome.AWAY_WIN) 1 else 0,
-                        loss = awayTeamStatistics.loss + if (matchOutcome == MatchOutcome.HOME_WIN) 1 else 0,
-                        draw = awayTeamStatistics.draw + if (matchOutcome == MatchOutcome.DRAW) 1 else 0,
-                        points = awayTeamStatistics.points + when (matchOutcome) {
-                            MatchOutcome.HOME_WIN -> 0
-                            MatchOutcome.DRAW -> 1
-                            MatchOutcome.AWAY_WIN -> 3
-                        }
-                    )
-                    teamStatisticsPerTeam[it.homeTeamId] = updatedHomeStats
-                    teamStatisticsPerTeam[it.awayTeamId] = updatedAwayStats
-                }
-
-                val roundDomainModel = RoundDomainModel(
-                    roundId = round.round.roundId,
-                    roundName = round.round.roundName,
-                    matches = round.matches.map { match ->
+    ): Flow<List<RoundDomainModel>> {
+        return roundDao.getRoundsWithMatches(groupId).combine(getTeams()) { rounds, teams ->
+            rounds.map { roundWithMatches ->
+                RoundDomainModel(
+                    roundId = roundWithMatches.round.roundId,
+                    roundName = roundWithMatches.round.roundName,
+                    matches = roundWithMatches.matches.map {
                         MatchDomainModel(
-                            homeTeam = teams.first { it.teamId == match.homeTeamId },
-                            awayTeam = teams.first { it.teamId == match.awayTeamId },
-                            homeGoals = match.homeGoals,
-                            awayGoals = match.awayGoals,
-                            date = "",
-                            time = ""
+                            homeTeam = TeamDomainModel(
+                                teamId = it.homeTeamId,
+                                name = teams.first { team -> team.teamId == it.homeTeamId }.name,
+                                players = emptyList()
+                            ),
+                            awayTeam = TeamDomainModel(
+                                teamId = it.awayTeamId,
+                                name = teams.first { team -> team.teamId == it.awayTeamId }.name,
+                                players = emptyList()
+                            ),
+                            homeGoals = it.homeGoals,
+                            awayGoals = it.awayGoals,
+                            time = "",
                         )
                     }
                 )
-                roundStatistics.add(roundDomainModel)
             }
-
-            val teamStatistics = teams.associateBy(
-                {
-                    TeamDomainModel(
-                        teamId = it.teamId,
-                        name = it.name,
-                        players = emptyList()
-                    )
-                },
-                {
-                    teamStatisticsPerTeam[it.teamId] ?: TeamStatistics()
-                }
-            )
-            GroupStatistics(
-                teamStatistics = teamStatistics,
-                roundStatistics = roundStatistics
-            )
         }
+    }
+
+    enum class MatchOutcome {
+        HOME_WIN, DRAW, AWAY_WIN
     }
 
     override suspend fun deleteRoundsForGroup(groupId: Long) {
@@ -205,8 +137,6 @@ class GroupStageRepositoryImpl @Inject constructor(
     override suspend fun generateAllMatches(groupId: Long) {
         withContext(Dispatchers.IO) {
             val group = groupDao.getGroup(groupId)
-            val numberOfRounds = group.teams.size - 1
-
             val team1 = group.teams[0]
             val team2 = group.teams[1]
             val team3 = group.teams[2]
@@ -262,9 +192,14 @@ class GroupStageRepositoryImpl @Inject constructor(
         homeTeam: TeamEntity,
         awayTeam: TeamEntity
     ): GeneratedMatchStats {
-        val homeAttack = Random.nextFloat() * homeTeam.attack * Random.nextFloat() * (1-awayTeam.defense)
-        val awayAttack = Random.nextFloat() * awayTeam.attack * Random.nextFloat() * (1-homeTeam.defense)
-        return GeneratedMatchStats(scoredGoalsBasedOnAttack(homeAttack), scoredGoalsBasedOnAttack(awayAttack))
+        val homeAttack =
+            Random.nextFloat() * homeTeam.attack * Random.nextFloat() * (1 - awayTeam.defense)
+        val awayAttack =
+            Random.nextFloat() * awayTeam.attack * Random.nextFloat() * (1 - homeTeam.defense)
+        return GeneratedMatchStats(
+            scoredGoalsBasedOnAttack(homeAttack),
+            scoredGoalsBasedOnAttack(awayAttack)
+        )
     }
 
     fun scoredGoalsBasedOnAttack(attack: Float): Int {
@@ -313,8 +248,7 @@ class GroupStageRepositoryImpl @Inject constructor(
                     ),
                     homeGoals = match.homeGoals,
                     awayGoals = match.awayGoals,
-                    date = if (match.isPlayed) LocalDateTime.now().toString() else "",
-                    time = "",
+                    time = if (match.isPlayed) LocalDateTime.now().toString() else "",
                 )
             },
         )

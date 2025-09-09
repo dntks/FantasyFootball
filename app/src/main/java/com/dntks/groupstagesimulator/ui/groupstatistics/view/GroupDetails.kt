@@ -20,7 +20,6 @@ import com.dntks.groupstagesimulator.ui.groupstatistics.viewmodel.GroupStatistic
 
 @Composable
 fun GroupDetails(
-    modifier: Modifier,
     groupStatisticsViewModel: GroupStatisticsViewModel = hiltViewModel(),
     onBack: () -> Unit,
 ) {
@@ -98,8 +97,6 @@ fun GroupDetailsView(
 @Preview
 fun GroupOverviewPreview() {
     GroupDetails(
-        modifier = Modifier,
         onBack = {}
     )
-
 }

@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.dntks.groupstagesimulator.data.model.GroupDomainModel
 import com.dntks.groupstagesimulator.data.model.GroupStatistics
 import com.dntks.groupstagesimulator.data.repository.GroupStageRepository
+import com.dntks.groupstagesimulator.domain.GetGroupStatisticsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -24,19 +24,13 @@ sealed class GroupStatisticsUiState {
 
 @HiltViewModel
 class GroupStatisticsViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
-    val repository: GroupStageRepository
+    savedStateHandle: SavedStateHandle,
+    val repository: GroupStageRepository,
+    getGroupStatsUseCase: GetGroupStatisticsUseCase
 ) : ViewModel() {
-
-    val teamsFlow = repository.getTeamsWithPlayers().stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        emptyList()
-    )
 
     private val groupId: Long = checkNotNull(savedStateHandle["groupId"])
 
-    //    private val _selectedGroup = MutableStateFlow(GroupStatisticsUiState.Loading)
     val selectedGroup = repository
         .getGroupWithTeams(groupId)
         .map {
@@ -47,24 +41,15 @@ class GroupStatisticsViewModel @Inject constructor(
             SharingStarted.WhileSubscribed(5000),
             GroupStatisticsUiState.Loading
         )
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val groupStatistics = repository
-        .getGroupWithTeams(groupId)
-        .flatMapLatest { group ->
-            repository.getGroupStatistics(group.id?:0, group.teams)
-        }
+    val groupStatistics = getGroupStatsUseCase
+        .getGroupStatistics(groupId)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             GroupStatistics(mapOf(), listOf())
         )
-
-
-    fun addTeams() {
-        viewModelScope.launch {
-//            teamsInjector.addTeams()
-        }
-    }
 
     fun generateAllMatches(groupId: Long) {
         viewModelScope.launch {
@@ -79,10 +64,4 @@ class GroupStatisticsViewModel @Inject constructor(
         }
     }
 
-    fun getGroupById(groupId: Long) {
-//        viewModelScope.launch {
-//            _selectedGroup.update { repository.getGroupWithTeams(groupId) }
-//
-//        }
-    }
 }
