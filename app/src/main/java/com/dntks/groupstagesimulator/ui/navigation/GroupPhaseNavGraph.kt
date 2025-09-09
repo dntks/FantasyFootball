@@ -10,9 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.dntks.groupstagesimulator.ui.groupstatistics.GroupDetails
-import com.dntks.groupstagesimulator.ui.overview.GroupsOverview
+import com.dntks.groupstagesimulator.ui.groupstatistics.view.GroupDetails
+import com.dntks.groupstagesimulator.ui.overview.view.GroupsOverview
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,9 +1,8 @@
-package com.dntks.groupstagesimulator.ui.groupstatistics
+package com.dntks.groupstagesimulator.ui.groupstatistics.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -20,10 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.dntks.groupstagesimulator.ui.groupstatistics.model.Team
-import com.dntks.groupstagesimulator.ui.groupstatistics.model.arsenal
-import com.dntks.groupstagesimulator.ui.groupstatistics.model.barcelona
-import com.dntks.groupstagesimulator.ui.groupstatistics.model.ftc
-import com.dntks.groupstagesimulator.ui.groupstatistics.model.glasgow
 import com.dntks.groupstagesimulator.ui.theme.Pink80
 
 @Composable
@@ -61,14 +56,14 @@ fun GroupStatistics(teams: List<Team>) {
                 GroupStatisticsTitleItem("Pts")
             }
 
-            teams.sortedBy { it.position }.forEach { team ->
+            teams.sortedByDescending { it.points }.forEachIndexed { position, team ->
                 Row(
                     modifier = Modifier.Companion
 
                         .background(Color.Companion.Blue)
                         .padding(5.dp)
                 ) {
-                    GroupStatisticsTeamItem(team.position.toString(), 20.dp)
+                    GroupStatisticsTeamItem((position + 1).toString(), 20.dp)
                     GroupStatisticsTeamItem(team.name, 100.dp)
                     GroupStatisticsTeamItem(team.played.toString())
                     GroupStatisticsTeamItem(team.win.toString())
@@ -115,10 +110,50 @@ private fun GroupStatisticsTitleItem(title: String, width: Dp = 25.dp) {
 fun GroupStatisticsPreview() {
     GroupStatistics(
         listOf(
-            barcelona,
-            ftc,
-            glasgow,
-            arsenal
+            Team(
+                name = "Barcelona",
+                played = 3,
+                win = 2,
+                loss = 0,
+                draw = 1,
+                points = 7,
+                goalsFor = 7,
+                goalsAgainst = 1,
+                goalDifference = 6,
+            ),
+            Team(
+                name = "FTC",
+                played = 3,
+                win = 1,
+                loss = 0,
+                draw = 1,
+                points = 4,
+                goalsFor = 3,
+                goalsAgainst = 2,
+                goalDifference = 1,
+            ),
+            Team(
+                name = "Glasgow",
+                played = 3,
+                win = 0,
+                loss = 3,
+                draw = 0,
+                points = 0,
+                goalsFor = 0,
+                goalsAgainst = 7,
+                goalDifference = -7,
+            ),
+            Team(
+                name = "Arsenal",
+                played = 3,
+                win = 1,
+                loss = 2,
+                draw = 0,
+                points = 3,
+                goalsFor = 2,
+                goalsAgainst = 1,
+                goalDifference = 1,
+            )
         )
     )
 }

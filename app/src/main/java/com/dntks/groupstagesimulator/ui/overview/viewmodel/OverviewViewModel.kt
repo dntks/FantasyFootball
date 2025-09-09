@@ -1,4 +1,4 @@
-package com.dntks.groupstagesimulator.ui.overview
+package com.dntks.groupstagesimulator.ui.overview.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,12 +19,12 @@ class OverviewViewModel @Inject constructor(
 
     val teamsFlow = repository.getTeams().stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.Companion.WhileSubscribed(5000),
         emptyList()
     )
     val groupsFlow = repository.getGroupsWithTeams().stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.Companion.WhileSubscribed(5000),
         emptyList()
     )
 

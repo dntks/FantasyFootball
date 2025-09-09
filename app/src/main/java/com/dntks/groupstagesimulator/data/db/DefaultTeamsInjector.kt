@@ -141,10 +141,4 @@ class DefaultTeamsInjector @Inject constructor(
             }
         }
     }
-
-    suspend fun deleteTeams(){
-        withContext(Dispatchers.IO){
-            teamDao.deleteAllTeams()
-        }
-    }
 }

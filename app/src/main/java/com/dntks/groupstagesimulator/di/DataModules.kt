@@ -63,5 +63,4 @@ object DatabaseModule {
             groupDao,
             roundDao
         )
-
 }

@@ -1,4 +1,4 @@
-package com.dntks.groupstagesimulator.ui.groupstatistics
+package com.dntks.groupstagesimulator.ui.groupstatistics.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -63,7 +63,6 @@ fun GroupDetailsView(
                     val stats = entry.value
                     Team(
                         name = team.name,
-                        position = 2,
                         played = stats.played,
                         win = stats.win,
                         loss = stats.loss,

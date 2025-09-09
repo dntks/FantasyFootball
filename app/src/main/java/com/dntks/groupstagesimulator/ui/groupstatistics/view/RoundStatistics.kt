@@ -1,16 +1,14 @@
-package com.dntks.groupstagesimulator.ui.groupstatistics
+package com.dntks.groupstagesimulator.ui.groupstatistics.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,7 +57,7 @@ fun RoundStatistics(round: Round) {
         ) {
             Row(modifier = Modifier.wrapContentWidth()) {
                 RoundStatisticsItem("Home")
-                RoundStatisticsItem("Score")
+                RoundStatisticsItem("Score", 70.dp)
                 RoundStatisticsItem("Away")
             }
 
@@ -67,7 +65,7 @@ fun RoundStatistics(round: Round) {
                 Row(modifier = Modifier.wrapContentWidth()) {
                     val score = if (it.played) "${it.homeGoals} - ${it.awayGoals}" else "-"
                     RoundStatisticsItem(it.homeTeam)
-                    RoundStatisticsItem(score)
+                    RoundStatisticsItem(score, 70.dp)
                     RoundStatisticsItem(it.awayTeam)
                 }
             }
@@ -76,7 +74,7 @@ fun RoundStatistics(round: Round) {
 }
 
 @Composable
-private fun RoundStatisticsItem(itemText: String, width: Dp = 70.dp) {
+private fun RoundStatisticsItem(itemText: String, width: Dp = 120.dp) {
     Column(modifier = Modifier.width(width)
         .padding(bottom = 8.dp)
     ) {
