@@ -72,7 +72,7 @@ class GroupStatisticsViewModel @Inject constructor(
         }
     }
 
-    fun deleteTeams(groupId: Long) {
+    fun deleteRounds(groupId: Long) {
         viewModelScope.launch {
             repository.deleteRoundsForGroup(groupId)
 

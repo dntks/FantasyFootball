@@ -30,7 +30,7 @@ object DatabaseModule {
             GroupStageDatabase::class.java,
             "GroupStageDatabase.db"
         )
-            .createFromAsset("db/GroupStageDatabase.db")
+//            .createFromAsset("db/GroupStageDatabase.db")
             .build()
     }
 

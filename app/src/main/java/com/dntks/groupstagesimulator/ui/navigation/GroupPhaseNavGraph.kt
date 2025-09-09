@@ -51,8 +51,6 @@ fun GroupPhaseNavGraph(
                 composable<Details> { backStackEntry ->
                     GroupDetails (
                         modifier = Modifier.safeContentPadding(),
-                        onSimulateClick = {},
-                        onSimulateAllClick = {},
                         onBack = { navController.popBackStack() },
                     )
                 }

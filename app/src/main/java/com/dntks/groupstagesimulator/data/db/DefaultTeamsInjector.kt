@@ -12,7 +12,6 @@ import com.dntks.groupstagesimulator.di.ApplicationScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DefaultTeamsInjector @Inject constructor(
@@ -22,7 +21,7 @@ class DefaultTeamsInjector @Inject constructor(
     val applicationScope: CoroutineScope
 ) {
     val defaultTeams = mapOf(
-        TeamEntity(name = "Middle Earth") to listOf(
+        TeamEntity(name = "Middle Earth", attack = 0.5f, defense = 0.6f) to listOf(
             PlayerEntity(name = "Tom Bombadil", position = GOAL_KEEPER),
             PlayerEntity(name = "Frodo Baggins", position = DEFENDER),
             PlayerEntity(name = "Bilbo Baggins", position = DEFENDER),
@@ -35,7 +34,7 @@ class DefaultTeamsInjector @Inject constructor(
             PlayerEntity(name = "Legolas", position = FORWARD),
             PlayerEntity(name = "Aragorn", position = FORWARD),
         ),
-        TeamEntity(name = "Asgard") to listOf(
+        TeamEntity(name = "Asgard", attack = 0.35f, defense = 0.7f) to listOf(
             PlayerEntity(name = "Heimdall", position = GOAL_KEEPER),
             PlayerEntity(name = "Baldur", position = DEFENDER),
             PlayerEntity(name = "Forseti", position = DEFENDER),
@@ -48,7 +47,7 @@ class DefaultTeamsInjector @Inject constructor(
             PlayerEntity(name = "Thor", position = FORWARD),
             PlayerEntity(name = "Tyr", position = FORWARD),
         ),
-        TeamEntity(name = "Dune") to listOf(
+        TeamEntity(name = "Dune", attack = 0.75f, defense = 0.25f) to listOf(
             PlayerEntity(name = "Chani", position = GOAL_KEEPER),
             PlayerEntity(name = "Lady Jessica", position = DEFENDER),
             PlayerEntity(name = "Alia Atreides", position = DEFENDER),
@@ -61,7 +60,7 @@ class DefaultTeamsInjector @Inject constructor(
             PlayerEntity(name = "Stilgar", position = FORWARD),
             PlayerEntity(name = "Paul Atreides", position = FORWARD),
         ),
-        TeamEntity(name = "The Office") to listOf(
+        TeamEntity(name = "The Office", attack = 0.2f, defense = 0.7f) to listOf(
             PlayerEntity(name = "Kevin Malone", position = GOAL_KEEPER),
             PlayerEntity(name = "Toby Flenderson", position = DEFENDER),
             PlayerEntity(name = "Ryan Howard", position = DEFENDER),
@@ -74,7 +73,7 @@ class DefaultTeamsInjector @Inject constructor(
             PlayerEntity(name = "Jim Halpert", position = FORWARD),
             PlayerEntity(name = "Dwight Kurt Schrute", position = FORWARD),
         ),
-        TeamEntity(name = "Hogwarts") to listOf(
+        TeamEntity(name = "Hogwarts", attack = 0.8f, defense = 0.4f) to listOf(
             PlayerEntity(name = "Rubeus Hagrid", position = GOAL_KEEPER),
             PlayerEntity(name = "Remus John Lupin", position = DEFENDER),
             PlayerEntity(name = "Sirius Black", position = DEFENDER),
@@ -87,7 +86,7 @@ class DefaultTeamsInjector @Inject constructor(
             PlayerEntity(name = "Ronald Bilius Weasley", position = FORWARD),
             PlayerEntity(name = "Harry James Potter", position = FORWARD),
         ),
-        TeamEntity(name = "Westeros") to listOf(
+        TeamEntity(name = "Westeros", attack = 0.75f, defense = 0.45f) to listOf(
             PlayerEntity(name = "Eddard \"Ned\" Stark", position = GOAL_KEEPER),
             PlayerEntity(name = "Tyrion Lannister", position = DEFENDER),
             PlayerEntity(name = "Stannis Baratheon", position = DEFENDER),
@@ -100,7 +99,7 @@ class DefaultTeamsInjector @Inject constructor(
             PlayerEntity(name = "Jaime Lannister", position = FORWARD),
             PlayerEntity(name = "Jon Snow", position = FORWARD),
         ),
-        TeamEntity(name = "Dragon Ball") to listOf(
+        TeamEntity(name = "Dragon Ball", attack = 0.9f, defense = 0.2f) to listOf(
             PlayerEntity(name = "Master Roshi", position = GOAL_KEEPER),
             PlayerEntity(name = "Son Gohan", position = DEFENDER),
             PlayerEntity(name = "Son Goten", position = DEFENDER),
@@ -113,7 +112,7 @@ class DefaultTeamsInjector @Inject constructor(
             PlayerEntity(name = "Vegeta", position = FORWARD),
             PlayerEntity(name = "Son Goku", position = FORWARD),
         ),
-        TeamEntity(name = "Azeroth") to listOf(
+        TeamEntity(name = "Azeroth", attack = 0.55f, defense = 0.45f) to listOf(
             PlayerEntity(name = "Thrall", position = GOAL_KEEPER),
             PlayerEntity(name = "Malfurion Stormrage", position = DEFENDER),
             PlayerEntity(name = "Khadgar", position = DEFENDER),

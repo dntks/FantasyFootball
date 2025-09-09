@@ -1,10 +1,10 @@
 package com.dntks.groupstagesimulator.ui.groupstatistics.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -14,38 +14,39 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.dntks.groupstagesimulator.ui.groupstatistics.model.Team
-import com.dntks.groupstagesimulator.ui.theme.Pink80
+import com.dntks.groupstagesimulator.ui.theme.DeepGreen
+import com.dntks.groupstagesimulator.ui.theme.DeepGreen90
+import com.dntks.groupstagesimulator.ui.theme.LightGreen
 
 @Composable
 fun GroupStatistics(teams: List<Team>) {
-
     Row(
         modifier = Modifier.Companion
             .horizontalScroll(rememberScrollState())
             .wrapContentWidth()
+
     ) {
         Column(
-            modifier = Modifier.Companion
-                .background(color = Pink80)
-                .wrapContentWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(DeepGreen)
         ) {
             Row(
-                modifier = Modifier.Companion
-                    .border(
-                        width = 1.dp,
-                        color = Color.Companion.Black,
-                        shape = RoundedCornerShape(3.dp)
-                    )
-                    .background(Color.Companion.LightGray)
-                    .padding(5.dp)
+                Modifier
+                    .fillMaxWidth()
+                    .background(LightGreen)
+                    .padding(horizontal = 10.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 GroupStatisticsTitleItem("#", 20.dp)
-                GroupStatisticsTitleItem("team", 100.dp)
+                GroupStatisticsTitleItem("team", 110.dp)
                 GroupStatisticsTitleItem("Pld")
                 GroupStatisticsTitleItem("W")
                 GroupStatisticsTitleItem("D")
@@ -57,14 +58,15 @@ fun GroupStatistics(teams: List<Team>) {
             }
 
             teams.sortedByDescending { it.points }.forEachIndexed { position, team ->
+                val background = if(position %2 ==0) Color.Transparent else DeepGreen90
                 Row(
-                    modifier = Modifier.Companion
-
-                        .background(Color.Companion.Blue)
-                        .padding(5.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(background)
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
                 ) {
                     GroupStatisticsTeamItem((position + 1).toString(), 20.dp)
-                    GroupStatisticsTeamItem(team.name, 100.dp)
+                    GroupStatisticsTeamItem(team.name, 110.dp)
                     GroupStatisticsTeamItem(team.played.toString())
                     GroupStatisticsTeamItem(team.win.toString())
                     GroupStatisticsTeamItem(team.draw.toString())
@@ -84,7 +86,7 @@ private fun GroupStatisticsTeamItem(itemText: String, width: Dp = 25.dp) {
     Column(
         modifier = Modifier
             .width(width)
-            .padding(bottom = 8.dp),
+            .padding(vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(

@@ -8,5 +8,7 @@ import androidx.room.PrimaryKey
 )
 data class TeamEntity(
     @PrimaryKey(autoGenerate = true) val teamId: Long = 0,
-    val name: String
+    val name: String,
+    val attack: Float,
+    val defense: Float,
 )

@@ -23,8 +23,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Random
 import javax.inject.Inject
+import kotlin.random.Random
 
 interface GroupStageRepository {
     fun getMatches(): Flow<List<GroupPhaseMatchEntity>>
@@ -34,7 +34,11 @@ interface GroupStageRepository {
     fun getGroupWithTeams(groupId: Long): Flow<GroupDomainModel>
     suspend fun addGroupWithTeams(group: GroupDomainModel)
     suspend fun generateAllMatches(groupId: Long)
-    suspend fun getGroupStatistics(groupId: Long, teams: List<TeamDomainModel>): Flow<GroupStatistics>
+    suspend fun getGroupStatistics(
+        groupId: Long,
+        teams: List<TeamDomainModel>
+    ): Flow<GroupStatistics>
+
     suspend fun deleteRoundsForGroup(groupId: Long)
 }
 
@@ -56,12 +60,15 @@ class GroupStageRepositoryImpl @Inject constructor(
         return teamDao.getAllTeamWithPlayers()
     }
 
-    enum class MatchOutcome{
+    enum class MatchOutcome {
         HOME_WIN, DRAW, AWAY_WIN
     }
 
     @Transaction
-    override suspend fun getGroupStatistics(groupId: Long, teams: List<TeamDomainModel>): Flow<GroupStatistics> {
+    override suspend fun getGroupStatistics(
+        groupId: Long,
+        teams: List<TeamDomainModel>
+    ): Flow<GroupStatistics> {
         val teamStatisticsPerTeam = teams.associateBy(
             { it.teamId },
             { TeamStatistics() }
@@ -70,10 +77,11 @@ class GroupStageRepositoryImpl @Inject constructor(
         return roundDao.getRoundsWithMatches(groupId).map { rounds ->
             rounds.forEach { round ->
                 round.matches.forEach {
-                    val homeTeamStatistics = teamStatisticsPerTeam.getOrDefault(it.homeTeamId, TeamStatistics())
-                    val matchOutcome = if (it.homeGoals > it.awayGoals){
+                    val homeTeamStatistics =
+                        teamStatisticsPerTeam.getOrDefault(it.homeTeamId, TeamStatistics())
+                    val matchOutcome = if (it.homeGoals > it.awayGoals) {
                         MatchOutcome.HOME_WIN
-                    } else if (it.homeGoals == it.awayGoals){
+                    } else if (it.homeGoals == it.awayGoals) {
                         MatchOutcome.DRAW
                     } else {
                         MatchOutcome.AWAY_WIN
@@ -86,13 +94,14 @@ class GroupStageRepositoryImpl @Inject constructor(
                         win = homeTeamStatistics.win + if (matchOutcome == MatchOutcome.HOME_WIN) 1 else 0,
                         loss = homeTeamStatistics.loss + if (matchOutcome == MatchOutcome.AWAY_WIN) 1 else 0,
                         draw = homeTeamStatistics.draw + if (matchOutcome == MatchOutcome.DRAW) 1 else 0,
-                        points = homeTeamStatistics.points + when(matchOutcome){
+                        points = homeTeamStatistics.points + when (matchOutcome) {
                             MatchOutcome.HOME_WIN -> 3
                             MatchOutcome.DRAW -> 1
                             MatchOutcome.AWAY_WIN -> 0
                         }
                     )
-                    val awayTeamStatistics = teamStatisticsPerTeam.getOrDefault(it.awayTeamId, TeamStatistics())
+                    val awayTeamStatistics =
+                        teamStatisticsPerTeam.getOrDefault(it.awayTeamId, TeamStatistics())
                     val updatedAwayStats = awayTeamStatistics.copy(
                         played = awayTeamStatistics.played + 1,
                         goalsFor = awayTeamStatistics.goalsFor + it.awayGoals,
@@ -101,7 +110,7 @@ class GroupStageRepositoryImpl @Inject constructor(
                         win = awayTeamStatistics.win + if (matchOutcome == MatchOutcome.AWAY_WIN) 1 else 0,
                         loss = awayTeamStatistics.loss + if (matchOutcome == MatchOutcome.HOME_WIN) 1 else 0,
                         draw = awayTeamStatistics.draw + if (matchOutcome == MatchOutcome.DRAW) 1 else 0,
-                        points = awayTeamStatistics.points + when(matchOutcome){
+                        points = awayTeamStatistics.points + when (matchOutcome) {
                             MatchOutcome.HOME_WIN -> 0
                             MatchOutcome.DRAW -> 1
                             MatchOutcome.AWAY_WIN -> 3
@@ -114,10 +123,10 @@ class GroupStageRepositoryImpl @Inject constructor(
                 val roundDomainModel = RoundDomainModel(
                     roundId = round.round.roundId,
                     roundName = round.round.roundName,
-                    matches = round.matches.map {  match ->
+                    matches = round.matches.map { match ->
                         MatchDomainModel(
-                            homeTeam = teams.first{it.teamId == match.homeTeamId},
-                            awayTeam = teams.first{it.teamId == match.awayTeamId},
+                            homeTeam = teams.first { it.teamId == match.homeTeamId },
+                            awayTeam = teams.first { it.teamId == match.awayTeamId },
                             homeGoals = match.homeGoals,
                             awayGoals = match.awayGoals,
                             date = "",
@@ -148,7 +157,7 @@ class GroupStageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteRoundsForGroup(groupId: Long) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             roundDao.deleteRoundsFromGroup(groupId)
         }
     }
@@ -217,28 +226,49 @@ class GroupStageRepositoryImpl @Inject constructor(
         val round = GroupPhaseRoundEntity(roundName = "Round $roundOrder", roundGroupId = groupId)
         val roundId = roundDao.upsertRound(round)
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        val firstMatchStats = generateMatchStats(firstMatchPair.first, firstMatchPair.second)
         val firstMatch = GroupPhaseMatchEntity(
             matchRoundId = roundId,
             homeTeamId = firstMatchPair.first.teamId,
             awayTeamId = firstMatchPair.second.teamId,
-            homeGoals = Random().nextInt(5),
-            awayGoals = Random().nextInt(5),
+            homeGoals = firstMatchStats.homeGoals,
+            awayGoals = firstMatchStats.awayGoals,
             date = LocalDateTime.now().format(formatter),
             time = null,
             isPlayed = true
         )
+        val secondMatchStats = generateMatchStats(secondMatchPair.first, secondMatchPair.second)
+
         val secondMatch = GroupPhaseMatchEntity(
             matchRoundId = roundId,
             homeTeamId = secondMatchPair.first.teamId,
             awayTeamId = secondMatchPair.second.teamId,
-            homeGoals = Random().nextInt(5),
-            awayGoals = Random().nextInt(5),
+            homeGoals = secondMatchStats.homeGoals,
+            awayGoals = secondMatchStats.awayGoals,
             date = LocalDateTime.now().format(formatter),
             time = null,
             isPlayed = true
         )
         groupStageMatchDao.upsertMatch(firstMatch)
         groupStageMatchDao.upsertMatch(secondMatch)
+    }
+
+    data class GeneratedMatchStats(
+        val homeGoals: Int,
+        val awayGoals: Int
+    )
+
+    fun generateMatchStats(
+        homeTeam: TeamEntity,
+        awayTeam: TeamEntity
+    ): GeneratedMatchStats {
+        val homeAttack = Random.nextFloat() * homeTeam.attack * Random.nextFloat() * (1-awayTeam.defense)
+        val awayAttack = Random.nextFloat() * awayTeam.attack * Random.nextFloat() * (1-homeTeam.defense)
+        return GeneratedMatchStats(scoredGoalsBasedOnAttack(homeAttack), scoredGoalsBasedOnAttack(awayAttack))
+    }
+
+    fun scoredGoalsBasedOnAttack(attack: Float): Int {
+        return (attack * Random.nextInt(10, 30)).toInt()
     }
 
     override fun getGroupsWithTeams(): Flow<List<GroupDomainModel>> {
@@ -283,7 +313,7 @@ class GroupStageRepositoryImpl @Inject constructor(
                     ),
                     homeGoals = match.homeGoals,
                     awayGoals = match.awayGoals,
-                    date = if(match.isPlayed) LocalDateTime.now().toString() else "",
+                    date = if (match.isPlayed) LocalDateTime.now().toString() else "",
                     time = "",
                 )
             },
