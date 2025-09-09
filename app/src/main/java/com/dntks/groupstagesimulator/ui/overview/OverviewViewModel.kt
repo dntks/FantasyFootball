@@ -2,6 +2,7 @@ package com.dntks.groupstagesimulator.ui.overview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dntks.groupstagesimulator.data.db.DefaultTeamsInjector
 import com.dntks.groupstagesimulator.data.model.GroupDomainModel
 import com.dntks.groupstagesimulator.data.repository.GroupStageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
-    val repository: GroupStageRepository
+    val repository: GroupStageRepository,
+    val teamsInjector: DefaultTeamsInjector,
 ): ViewModel() {
 
     val teamsFlow = repository.getTeams().stateIn(
@@ -29,6 +31,12 @@ class OverviewViewModel @Inject constructor(
     fun addGroup(group: GroupDomainModel){
         viewModelScope.launch {
             repository.addGroupWithTeams(group)
+        }
+    }
+
+    fun addTeams(){
+        viewModelScope.launch {
+            teamsInjector.addTeams()
         }
     }
 

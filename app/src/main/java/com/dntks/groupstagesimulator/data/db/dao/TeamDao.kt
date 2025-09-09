@@ -19,15 +19,19 @@ interface TeamDao {
     @Query("SELECT * FROM team")
     fun getAllTeamWithPlayers(): Flow<List<TeamWithPlayers>>
 
+    @Transaction
     @Upsert
     suspend fun upsertTeam(team: TeamEntity): Long
 
+    @Transaction
     @Query("SELECT * FROM team WHERE teamId = :id")
     suspend fun findTeamById(id: Long): TeamEntity
 
+    @Transaction
     @Upsert
     suspend fun upsertTeams(team: List<TeamEntity>)
 
+    @Transaction
     @Query("DELETE FROM team")
     suspend fun deleteAllTeams()
 }

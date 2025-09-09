@@ -60,7 +60,8 @@ object DatabaseModule {
         GroupStageRepositoryImpl(
             groupStageMatchDao,
             teamDao,
-            groupDao
+            groupDao,
+            roundDao
         )
 
 }

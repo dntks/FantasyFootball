@@ -35,10 +35,11 @@ data class GroupPhaseMatchEntity(
     @PrimaryKey(autoGenerate = true) val matchId: Int = 0,
     val homeTeamId: Long,
     val awayTeamId: Long,
-    val matchRoundId: Int,
+    val matchRoundId: Long,
     val homeGoals: Int,
     val awayGoals: Int,
     val date: String?,
     val time: String?,
     val isPlayed: Boolean
 )
+

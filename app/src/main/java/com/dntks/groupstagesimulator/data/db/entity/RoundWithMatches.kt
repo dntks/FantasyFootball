@@ -7,7 +7,7 @@ data class RoundWithMatches(
     @Embedded val round: GroupPhaseRoundEntity,
     @Relation(
         parentColumn = "roundId",
-        entityColumn = "matchId"
+        entityColumn = "matchRoundId"
     )
     val matches: List<GroupPhaseMatchEntity>
 )

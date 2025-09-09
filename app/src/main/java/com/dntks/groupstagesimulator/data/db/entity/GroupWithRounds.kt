@@ -8,7 +8,7 @@ data class GroupWithRoundsAndTeams(
     @Embedded val group: GroupEntity,
     @Relation(
         parentColumn = "groupId",
-        entityColumn = "roundId"
+        entityColumn = "roundGroupId"
     )
     val rounds: List<GroupPhaseRoundEntity>,
     @Relation(
