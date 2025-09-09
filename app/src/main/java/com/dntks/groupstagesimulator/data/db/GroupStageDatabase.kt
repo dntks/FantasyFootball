@@ -14,6 +14,9 @@ import com.dntks.groupstagesimulator.data.db.entity.GroupTeamCrossRef
 import com.dntks.groupstagesimulator.data.db.entity.PlayerEntity
 import com.dntks.groupstagesimulator.data.db.entity.TeamEntity
 
+/**
+ * Database for the app.
+ */
 @Database(
     entities = [
         GroupPhaseMatchEntity::class,

@@ -5,6 +5,10 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Entity for storing a match of a tournament.
+ * Referencing teams and round.
+ */
 @Entity(
     tableName = "group_phase_match",
     foreignKeys = [

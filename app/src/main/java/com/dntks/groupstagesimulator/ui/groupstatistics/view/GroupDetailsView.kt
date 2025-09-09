@@ -4,46 +4,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dntks.groupstagesimulator.data.model.GroupDomainModel
-import com.dntks.groupstagesimulator.data.model.GroupStatistics
+import com.dntks.groupstagesimulator.domain.GroupStatistics
+import com.dntks.groupstagesimulator.ui.groupstatistics.model.MatchOutcome
+import com.dntks.groupstagesimulator.ui.groupstatistics.model.Round
 import com.dntks.groupstagesimulator.ui.groupstatistics.model.Team
-import com.dntks.groupstagesimulator.ui.groupstatistics.viewmodel.GroupStatisticsUiState
 import com.dntks.groupstagesimulator.ui.groupstatistics.viewmodel.GroupStatisticsViewModel
 
-@Composable
-fun GroupDetails(
-    groupStatisticsViewModel: GroupStatisticsViewModel = hiltViewModel(),
-    onBack: () -> Unit,
-) {
-    val uiState by groupStatisticsViewModel.selectedGroup.collectAsStateWithLifecycle()
-    val groupStatistics by groupStatisticsViewModel.groupStatistics.collectAsStateWithLifecycle()
-
-    when (uiState) {
-        GroupStatisticsUiState.Error -> Text("Error")
-        GroupStatisticsUiState.Loading -> Text("Loading")
-        is GroupStatisticsUiState.Success -> {
-            GroupDetailsView(
-                viewModel = groupStatisticsViewModel,
-                modifier = Modifier,
-                group = (uiState as GroupStatisticsUiState.Success).group,
-                groupStatistics = groupStatistics,
-                onBack = onBack
-            )
-        }
-    }
-}
-
+/**
+ * View containing group and round statistics
+ */
 @Composable
 fun GroupDetailsView(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.Companion,
     group: GroupDomainModel,
     viewModel: GroupStatisticsViewModel,
     groupStatistics: GroupStatistics,
@@ -91,12 +67,4 @@ fun GroupDetailsView(
             }
         }
     }
-}
-
-@Composable
-@Preview
-fun GroupOverviewPreview() {
-    GroupDetails(
-        onBack = {}
-    )
 }

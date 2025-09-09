@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dntks.groupstagesimulator.data.model.GroupDomainModel
-import com.dntks.groupstagesimulator.data.model.GroupStatistics
+import com.dntks.groupstagesimulator.domain.GroupStatistics
 import com.dntks.groupstagesimulator.data.repository.GroupStageRepository
 import com.dntks.groupstagesimulator.domain.GetGroupStatisticsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

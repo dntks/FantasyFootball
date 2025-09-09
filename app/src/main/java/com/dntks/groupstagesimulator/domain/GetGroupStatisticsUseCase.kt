@@ -1,9 +1,7 @@
 package com.dntks.groupstagesimulator.domain
 
-import com.dntks.groupstagesimulator.data.model.GroupStatistics
 import com.dntks.groupstagesimulator.data.model.RoundDomainModel
 import com.dntks.groupstagesimulator.data.model.TeamDomainModel
-import com.dntks.groupstagesimulator.data.model.TeamStatistics
 import com.dntks.groupstagesimulator.data.repository.GroupStageRepository
 import com.dntks.groupstagesimulator.data.repository.GroupStageRepositoryImpl.MatchOutcome
 import kotlinx.coroutines.flow.Flow

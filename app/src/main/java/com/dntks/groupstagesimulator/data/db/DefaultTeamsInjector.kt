@@ -14,6 +14,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Used for setting up default teams and players in the DB
+ */
 class DefaultTeamsInjector @Inject constructor(
     val teamDao: TeamDao,
     val playerDao: PlayerDao,
@@ -127,6 +130,9 @@ class DefaultTeamsInjector @Inject constructor(
         )
     )
 
+    /**
+     * Injects the default values to the db
+     */
     fun addTeams() {
         defaultTeams.forEach { team, players ->
             applicationScope.launch(Dispatchers.IO) {

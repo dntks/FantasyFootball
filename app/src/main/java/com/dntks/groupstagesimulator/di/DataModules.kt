@@ -17,7 +17,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-
+/**
+ * Module for providing Database and DAOs
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
@@ -30,7 +32,7 @@ object DatabaseModule {
             GroupStageDatabase::class.java,
             "GroupStageDatabase.db"
         )
-//            .createFromAsset("db/GroupStageDatabase.db")
+            .createFromAsset("db/GroupStageDatabase.db")
             .build()
     }
 

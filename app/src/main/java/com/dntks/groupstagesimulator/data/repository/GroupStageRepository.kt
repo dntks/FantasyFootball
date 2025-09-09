@@ -24,6 +24,9 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlin.random.Random
 
+/**
+ * Repository for the app.
+ */
 interface GroupStageRepository {
     fun getMatches(): Flow<List<GroupPhaseMatchEntity>>
     fun getTeams(): Flow<List<TeamEntity>>
@@ -36,24 +39,40 @@ interface GroupStageRepository {
     fun getRoundsWithMatches(groupId: Long): Flow<List<RoundDomainModel>>
 }
 
+/**
+ * Default GroupStageRepository implementation
+ */
 class GroupStageRepositoryImpl @Inject constructor(
     val groupStageMatchDao: GroupStageMatchDao,
     val teamDao: TeamDao,
     val groupDao: GroupDao,
     val roundDao: RoundDao,
 ) : GroupStageRepository {
+
+    /**
+     * Returns all matches in the database.
+     */
     override fun getMatches(): Flow<List<GroupPhaseMatchEntity>> {
         return groupStageMatchDao.getAllMatches()
     }
 
+    /**
+     * Returns all teams in the database.
+     */
     override fun getTeams(): Flow<List<TeamEntity>> {
         return teamDao.getAllTeams()
     }
 
+    /**
+     * Returns all teams and their players in the database.
+     */
     override fun getTeamsWithPlayers(): Flow<List<TeamWithPlayers>> {
         return teamDao.getAllTeamWithPlayers()
     }
 
+    /**
+     * Returns all rounds for a group.
+     */
     override fun getRoundsWithMatches(
         groupId: Long,
     ): Flow<List<RoundDomainModel>> {

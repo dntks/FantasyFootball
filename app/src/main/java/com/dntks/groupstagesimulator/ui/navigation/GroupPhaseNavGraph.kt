@@ -9,25 +9,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.dntks.groupstagesimulator.ui.groupstatistics.view.GroupDetails
+import com.dntks.groupstagesimulator.ui.groupstatistics.view.GroupDetailsPage
 import com.dntks.groupstagesimulator.ui.overview.view.GroupsOverview
 import com.dntks.groupstagesimulator.ui.theme.Cream
-import kotlinx.serialization.Serializable
 
-@Serializable
-object Overview
-
-@Serializable
-data class Details(
-    val groupId: Long
-)
-
+/**
+ * Navigation graph for the app.
+ */
 @Composable
 fun GroupPhaseNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-//    groupViewModel: OverviewViewModel = hiltViewModel(),
-//    statisticsViewModel: GroupStatisticsViewModel = hiltViewModel(),
 ) {
 
     Surface(
@@ -47,7 +39,7 @@ fun GroupPhaseNavGraph(
                     }
                 }
                 composable<Details> { backStackEntry ->
-                    GroupDetails (
+                    GroupDetailsPage (
                         onBack = { navController.popBackStack() },
                     )
                 }

@@ -19,6 +19,9 @@ import androidx.compose.ui.unit.dp
 import com.dntks.groupstagesimulator.data.model.GroupDomainModel
 import com.dntks.groupstagesimulator.ui.groupstatistics.viewmodel.GroupStatisticsViewModel
 
+/**
+ * Top bar for the group statistics screen.
+ */
 @Composable
 fun TopBar(
     group: GroupDomainModel,

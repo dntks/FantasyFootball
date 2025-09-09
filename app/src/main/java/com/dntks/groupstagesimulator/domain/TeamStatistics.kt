@@ -1,5 +1,8 @@
-package com.dntks.groupstagesimulator.data.model
+package com.dntks.groupstagesimulator.domain
 
+/**
+ * Model for team statistics
+ */
 data class TeamStatistics(
     val played: Int = 0,
     val win: Int = 0,

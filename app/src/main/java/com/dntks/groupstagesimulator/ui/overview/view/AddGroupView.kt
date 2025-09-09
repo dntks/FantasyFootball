@@ -14,6 +14,9 @@ import com.dntks.groupstagesimulator.data.db.entity.TeamEntity
 import com.dntks.groupstagesimulator.data.model.GroupDomainModel
 import com.dntks.groupstagesimulator.data.model.TeamDomainModel
 
+/**
+ * Unused view, was created to create groups from the UI
+ */
 @Composable
 fun AddGroupView(
     modifier: Modifier,

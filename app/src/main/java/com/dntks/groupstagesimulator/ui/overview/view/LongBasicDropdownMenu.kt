@@ -18,6 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dntks.groupstagesimulator.data.db.entity.TeamEntity
 
+/**
+ * Unused function, was created to setup default Teams for groups from the UI
+ */
 @Composable
 fun LongBasicDropdownMenu(
     values: List<TeamEntity>,

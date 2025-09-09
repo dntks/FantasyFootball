@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -19,26 +18,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dntks.groupstagesimulator.ui.groupstatistics.model.MatchOutcome
+import com.dntks.groupstagesimulator.ui.groupstatistics.model.Round
+import com.dntks.groupstagesimulator.ui.theme.CardBeige
 
-data class Round(
-    val roundName: String,
-    val matchOutcomes: List<MatchOutcome>
-)
-
-data class MatchOutcome(
-    val homeTeam: String,
-    val awayTeam: String,
-    val homeGoals: Int,
-    val awayGoals: Int,
-    val played: Boolean = false
-)
-
+/**
+ * Round statistics view
+ */
 @Composable
 fun RoundStatistics(round: Round) {
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
-            .background(Color.Yellow)
+            .background(CardBeige)
             .border(
                 width = 1.dp,
                 color = Color.Black,
@@ -73,6 +65,9 @@ fun RoundStatistics(round: Round) {
     }
 }
 
+/**
+ * Round statistics text item
+ */
 @Composable
 private fun RoundStatisticsItem(itemText: String, width: Dp = 120.dp) {
     Column(modifier = Modifier.width(width)

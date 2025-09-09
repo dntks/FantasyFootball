@@ -4,6 +4,9 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
+/**
+ * Helper class to handle one-to-many relation between Round and Team.
+ */
 data class GroupWithRoundsAndTeams(
     @Embedded val group: GroupEntity,
     @Relation(

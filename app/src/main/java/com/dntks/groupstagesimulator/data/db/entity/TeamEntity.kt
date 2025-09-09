@@ -3,6 +3,9 @@ package com.dntks.groupstagesimulator.data.db.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * Entity for storing teams of a tournament.
+ */
 @Entity(
     tableName = "team"
 )

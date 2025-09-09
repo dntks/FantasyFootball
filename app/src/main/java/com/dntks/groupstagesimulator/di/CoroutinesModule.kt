@@ -11,6 +11,9 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+/**
+ * Coroutines dispatchers annotations for easier injection
+ */
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class IoDispatcher
@@ -23,6 +26,9 @@ annotation class DefaultDispatcher
 @Qualifier
 annotation class ApplicationScope
 
+/**
+ * Module for providing most used Dispatchers
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object CoroutinesModule {

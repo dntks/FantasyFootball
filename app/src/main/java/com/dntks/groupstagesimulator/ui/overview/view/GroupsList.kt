@@ -23,6 +23,9 @@ import com.dntks.groupstagesimulator.data.model.TeamDomainModel
 import com.dntks.groupstagesimulator.ui.theme.CardBeige
 import com.dntks.groupstagesimulator.ui.theme.DeepGreen90
 
+/**
+ * List of groups for the overview screen.
+ */
 @Composable
 fun GroupsList(
     groups: List<GroupDomainModel>,

@@ -5,6 +5,10 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Entity for storing rounds of a group phase.
+ * Referencing its group.
+ */
 @Entity(
     tableName = "group_phase_round",
     foreignKeys = [

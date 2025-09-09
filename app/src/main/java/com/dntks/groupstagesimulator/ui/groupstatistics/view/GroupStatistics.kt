@@ -24,6 +24,9 @@ import com.dntks.groupstagesimulator.ui.theme.DeepGreen
 import com.dntks.groupstagesimulator.ui.theme.DeepGreen90
 import com.dntks.groupstagesimulator.ui.theme.LightGreen
 
+/**
+ * View containing group statistics
+ */
 @Composable
 fun GroupStatistics(teams: List<Team>) {
     Row(
@@ -81,6 +84,9 @@ fun GroupStatistics(teams: List<Team>) {
     }
 }
 
+/**
+ * View for showing an item in the statistics table
+ */
 @Composable
 private fun GroupStatisticsTeamItem(itemText: String, width: Dp = 25.dp) {
     Column(
@@ -97,6 +103,9 @@ private fun GroupStatisticsTeamItem(itemText: String, width: Dp = 25.dp) {
     }
 }
 
+/**
+ * View for showing a title in the statistics table
+ */
 @Composable
 private fun GroupStatisticsTitleItem(title: String, width: Dp = 25.dp) {
     Column(

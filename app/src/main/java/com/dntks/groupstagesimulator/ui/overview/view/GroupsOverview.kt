@@ -18,15 +18,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dntks.groupstagesimulator.R
 import com.dntks.groupstagesimulator.ui.overview.viewmodel.OverviewViewModel
 
+/**
+ * Overview screen for groups
+ */
 @Composable
 fun GroupsOverview(
     viewModel: OverviewViewModel = hiltViewModel(),
     onGroupClick: (groupId: Long) -> Unit = {}
 ) {
-
     val groups by viewModel.groupsFlow.collectAsStateWithLifecycle()
     Column {
-
         Row(
             Modifier.Companion
                 .fillMaxWidth()
@@ -37,18 +38,8 @@ fun GroupsOverview(
                 stringResource(R.string.title),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Companion.SemiBold)
             )
-
         }
         GroupsList(groups, onGroupClick)
-//        AddGroupView(modifier = modifier, teams) {
-//            viewModel.addGroup(it)
-//        }
-//        Button(onClick = {
-//            viewModel.addTeams()
-//        }) {
-//            Text("add teams")
-//        }
-
     }
 }
 
