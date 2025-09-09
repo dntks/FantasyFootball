@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -38,6 +39,7 @@ fun RoundStatistics(round: Round) {
             )
             .padding(10.dp)
             .wrapContentHeight()
+            .fillMaxWidth()
     ) {
         Row {
             Text(round.roundName, fontSize = 25.sp, modifier = Modifier.padding(vertical = 10.dp))

@@ -19,7 +19,7 @@ import com.dntks.groupstagesimulator.ui.groupstatistics.viewmodel.GroupStatistic
  */
 @Composable
 fun GroupDetailsView(
-    modifier: Modifier = Modifier.Companion,
+    modifier: Modifier = Modifier,
     group: GroupDomainModel,
     viewModel: GroupStatisticsViewModel,
     groupStatistics: GroupStatistics,

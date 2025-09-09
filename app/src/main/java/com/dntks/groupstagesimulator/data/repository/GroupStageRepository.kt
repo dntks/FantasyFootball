@@ -8,6 +8,7 @@ import com.dntks.groupstagesimulator.data.db.entity.GroupEntity
 import com.dntks.groupstagesimulator.data.db.entity.GroupPhaseMatchEntity
 import com.dntks.groupstagesimulator.data.db.entity.GroupPhaseRoundEntity
 import com.dntks.groupstagesimulator.data.db.entity.GroupTeamCrossRef
+import com.dntks.groupstagesimulator.data.db.entity.GroupWithRoundsAndTeams
 import com.dntks.groupstagesimulator.data.db.entity.TeamEntity
 import com.dntks.groupstagesimulator.data.db.entity.TeamWithPlayers
 import com.dntks.groupstagesimulator.data.model.GroupDomainModel
@@ -20,9 +21,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import kotlin.random.Random
 
 /**
  * Repository for the app.
@@ -34,9 +33,12 @@ interface GroupStageRepository {
     fun getGroupsWithTeams(): Flow<List<GroupDomainModel>>
     fun getGroupWithTeams(groupId: Long): Flow<GroupDomainModel>
     suspend fun addGroupWithTeams(group: GroupDomainModel)
-    suspend fun generateAllMatches(groupId: Long)
+//    suspend fun generateAllMatches(groupId: Long)
     suspend fun deleteRoundsForGroup(groupId: Long)
     fun getRoundsWithMatches(groupId: Long): Flow<List<RoundDomainModel>>
+    suspend fun upsertRound(roundName: String, groupId: Long): Long
+    suspend fun upsertMatch(match: GroupPhaseMatchEntity)
+    fun getGroup(groupId: Long): GroupWithRoundsAndTeams
 }
 
 /**
@@ -103,6 +105,19 @@ class GroupStageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun upsertRound(roundName: String, groupId: Long): Long {
+        val round = GroupPhaseRoundEntity(roundName = roundName, roundGroupId = groupId)
+        return roundDao.upsertRound(round)
+    }
+
+    override suspend fun upsertMatch(match: GroupPhaseMatchEntity) {
+        groupStageMatchDao.upsertMatch(match)
+    }
+
+    override fun getGroup(groupId: Long) : GroupWithRoundsAndTeams{
+        return groupDao.getGroup(groupId)
+    }
+
     enum class MatchOutcome {
         HOME_WIN, DRAW, AWAY_WIN
     }
@@ -151,78 +166,6 @@ class GroupStageRepositoryImpl @Inject constructor(
                 crossRefs
             )
         }
-    }
-
-    override suspend fun generateAllMatches(groupId: Long) {
-        withContext(Dispatchers.IO) {
-            val group = groupDao.getGroup(groupId)
-            val team1 = group.teams[0]
-            val team2 = group.teams[1]
-            val team3 = group.teams[2]
-            val team4 = group.teams[3]
-            generateRound(groupId, roundOrder = 1, Pair(team1, team2), Pair(team3, team4))
-            generateRound(groupId, roundOrder = 2, Pair(team1, team3), Pair(team2, team4))
-            generateRound(groupId, roundOrder = 3, Pair(team4, team1), Pair(team2, team3))
-        }
-    }
-
-    suspend fun generateRound(
-        groupId: Long,
-        roundOrder: Int,
-        firstMatchPair: Pair<TeamEntity, TeamEntity>,
-        secondMatchPair: Pair<TeamEntity, TeamEntity>
-    ) {
-        val round = GroupPhaseRoundEntity(roundName = "Round $roundOrder", roundGroupId = groupId)
-        val roundId = roundDao.upsertRound(round)
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-        val firstMatchStats = generateMatchStats(firstMatchPair.first, firstMatchPair.second)
-        val firstMatch = GroupPhaseMatchEntity(
-            matchRoundId = roundId,
-            homeTeamId = firstMatchPair.first.teamId,
-            awayTeamId = firstMatchPair.second.teamId,
-            homeGoals = firstMatchStats.homeGoals,
-            awayGoals = firstMatchStats.awayGoals,
-            date = LocalDateTime.now().format(formatter),
-            time = null,
-            isPlayed = true
-        )
-        val secondMatchStats = generateMatchStats(secondMatchPair.first, secondMatchPair.second)
-
-        val secondMatch = GroupPhaseMatchEntity(
-            matchRoundId = roundId,
-            homeTeamId = secondMatchPair.first.teamId,
-            awayTeamId = secondMatchPair.second.teamId,
-            homeGoals = secondMatchStats.homeGoals,
-            awayGoals = secondMatchStats.awayGoals,
-            date = LocalDateTime.now().format(formatter),
-            time = null,
-            isPlayed = true
-        )
-        groupStageMatchDao.upsertMatch(firstMatch)
-        groupStageMatchDao.upsertMatch(secondMatch)
-    }
-
-    data class GeneratedMatchStats(
-        val homeGoals: Int,
-        val awayGoals: Int
-    )
-
-    fun generateMatchStats(
-        homeTeam: TeamEntity,
-        awayTeam: TeamEntity
-    ): GeneratedMatchStats {
-        val homeAttack =
-            Random.nextFloat() * homeTeam.attack * Random.nextFloat() * (1 - awayTeam.defense)
-        val awayAttack =
-            Random.nextFloat() * awayTeam.attack * Random.nextFloat() * (1 - homeTeam.defense)
-        return GeneratedMatchStats(
-            scoredGoalsBasedOnAttack(homeAttack),
-            scoredGoalsBasedOnAttack(awayAttack)
-        )
-    }
-
-    fun scoredGoalsBasedOnAttack(attack: Float): Int {
-        return (attack * Random.nextInt(10, 30)).toInt()
     }
 
     override fun getGroupsWithTeams(): Flow<List<GroupDomainModel>> {
