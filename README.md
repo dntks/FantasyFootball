@@ -16,5 +16,6 @@ functionality, and most of my time went with setting up a database which is scal
 
 Improvements, which I had no time to develop:
 - More separating the layers, not having references of entities outside of the data layer, having a clearer boundary between the layers by defining separate model for the domain layer and UI layer.
+- add unit tests for classes with logic, add integration tests with setup database, and ui tests to check general usability and edge cases.
 - As it doesn't have Android specific modules, I planned to make it in kotlin multiplatform, as I had smooth experience before.
 - I thought it'd be cool to add AI functionality to request a game summary based on the teams, players and match outcome. I already tested it a bit, maybe I'll create a pet project from the idea.
