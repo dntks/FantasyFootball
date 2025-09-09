@@ -26,7 +26,7 @@ data class Group(
 )
 
 @Composable
-fun GroupOverview(
+fun GroupView(
     modifier: Modifier,
     group: Group,
     viewModel: GroupStatisticsViewModel = hiltViewModel(),
@@ -76,7 +76,7 @@ fun GroupOverview(
 @Composable
 @Preview
 fun GroupOverviewPreview() {
-    GroupOverview(
+    GroupView(
         onSimulateClick = {},
         onSimulateAllClick = {},
         modifier = Modifier,

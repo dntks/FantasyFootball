@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
     tableName = "group_phase_round"
 )
 data class GroupPhaseRoundEntity(
-    @PrimaryKey(autoGenerate = true) val roundId: Int = 0,
+    @PrimaryKey(autoGenerate = true) val roundId: Long = 0,
     val roundName: String
 )

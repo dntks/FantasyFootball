@@ -10,6 +10,7 @@ import com.dntks.groupstagesimulator.data.db.dao.TeamDao
 import com.dntks.groupstagesimulator.data.db.entity.GroupEntity
 import com.dntks.groupstagesimulator.data.db.entity.GroupPhaseMatchEntity
 import com.dntks.groupstagesimulator.data.db.entity.GroupPhaseRoundEntity
+import com.dntks.groupstagesimulator.data.db.entity.GroupTeamCrossRef
 import com.dntks.groupstagesimulator.data.db.entity.PlayerEntity
 import com.dntks.groupstagesimulator.data.db.entity.TeamEntity
 
@@ -19,7 +20,8 @@ import com.dntks.groupstagesimulator.data.db.entity.TeamEntity
         GroupPhaseRoundEntity::class,
         TeamEntity::class,
         PlayerEntity::class,
-        GroupEntity::class
+        GroupEntity::class,
+        GroupTeamCrossRef::class,
     ],
     version = 1,
     exportSchema = false

@@ -6,7 +6,6 @@ import com.dntks.groupstagesimulator.data.db.DefaultTeamsInjector
 import com.dntks.groupstagesimulator.data.repository.GroupStageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,10 +13,10 @@ import javax.inject.Inject
 @HiltViewModel
 class GroupStatisticsViewModel @Inject constructor(
     val teamsInjector: DefaultTeamsInjector,
-    val repository: GroupStageRepository
+    repository: GroupStageRepository
 ) : ViewModel() {
 
-    val teamsFlow = repository.getTeams().stateIn(
+    val teamsFlow = repository.getTeamsWithPlayers().stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
